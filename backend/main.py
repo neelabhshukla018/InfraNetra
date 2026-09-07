@@ -954,16 +954,16 @@ async def api_pm_my_project(user: Dict[str, Any] = Depends(require_project_manag
 
 
 # ==============================================================================
-# PROTECTED FLASH REPORT INGESTION & DATASET OPERATIONS (ADMIN ONLY)
+# PROTECTED FLASH REPORT INGESTION & DATASET OPERATIONS
 # ==============================================================================
 
 @app.post("/api/ingest-flash-report")
 async def ingest_flash_report(
     file: UploadFile = File(...),
     report_month: str = Form("April 2026"),
-    admin_user: Dict[str, Any] = Depends(require_admin)
+    admin_user: Dict[str, Any] = Depends(require_ministry)
 ):
-    """Ingest monthly PAIMANA Flash Report (Admin Only)."""
+    """Ingest monthly PAIMANA Flash Report (Administrator or Ministry Officer)."""
     if not file or not file.filename:
         raise HTTPException(status_code=400, detail="No file provided")
 
@@ -1002,7 +1002,7 @@ async def ingest_flash_report(
     record_audit_log(
         actor_id=admin_user["id"],
         actor_username=admin_user["username"],
-        actor_role="ADMIN",
+        actor_role=admin_user["role"],
         action="INGEST_FLASH_REPORT",
         target_type="REPORT",
         target_id=safe_filename,
