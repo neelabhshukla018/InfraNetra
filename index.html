@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InfraNetra — Infrastructure Risk Intelligence Platform</title>
+    <link rel="icon" type="image/png" href="/infranetra-logo.png" />
+    <link rel="shortcut icon" type="image/png" href="/infranetra-logo.png" />
+    <link rel="apple-touch-icon" href="/infranetra-logo.png" />
+    <meta name="description" content="Government infrastructure-risk monitoring dashboard tracking mega projects, time and cost overruns, and early warnings based on PAIMANA Flash Report data." />
+    <meta property="og:title" content="InfraNetra — Infrastructure Risk Intelligence Platform" />
+    <meta property="og:description" content="Government infrastructure-risk monitoring dashboard tracking mega projects, time and cost overruns, and early warnings based on PAIMANA Flash Report data." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://maps.googleapis.com">
+    <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+      // Early auth handler for Google Maps JS API
+      window.gm_authFailure = function() {
+        console.warn('Google Maps authentication failed or key restricted. Please verify VITE_GOOGLE_MAPS_API_KEY.');
+        window.__GOOGLE_MAPS_AUTH_FAILED__ = true;
+      };
+    </script>
+    <!-- Google Maps JS SDK preloaded early for seamless page refresh -->
+    <script
+      id="google-maps-js-sdk"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIrfTGCLMWD7TGU8BfqwcHiuDLliyhUws&libraries=places,geometry&callback=__infranetraGMapReady"
+      async
+      defer
+    ></script>
+  </head>
+  <body class="bg-[#F8FAFC] text-[#1E293B] antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

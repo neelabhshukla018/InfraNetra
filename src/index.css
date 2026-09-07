@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-navy: #101A3D;
+  --color-navy-hover: #1E2A5E;
+  --color-accent-teal: #0F9D8C;
+  --color-teal-tint: #E6F6F4;
+  --color-critical-red: #DC2626;
+  --color-high-orange: #EA580C;
+  --color-medium-amber: #D97706;
+  --color-low-green: #16A34A;
+  --color-surface-white: #FFFFFF;
+  --color-page-bg: #F8FAFC;
+  --color-border-slate: #E2E8F0;
+  --color-text-primary: #1E293B;
+  --color-text-muted: #64748B;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+@layer base {
+  :root {
+    --primary-navy: #101A3D;
+    --navy-hover: #1E2A5E;
+    --accent-teal: #0F9D8C;
+    --teal-tint: #E6F6F4;
+    --critical-red: #DC2626;
+    --high-orange: #EA580C;
+    --medium-amber: #D97706;
+    --low-green: #16A34A;
+    --surface-white: #FFFFFF;
+    --page-bg: #F8FAFC;
+    --border-slate: #E2E8F0;
+    --text-primary: #1E293B;
+    --text-muted: #64748B;
+  }
+
+  html,
+  body,
+  #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--page-bg);
+    color: var(--text-primary);
+  }
+
+  .font-mono-code {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .font-tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Prevent blinking text caret line on logos, images, icons, and non-editable elements */
+  *:not(input):not(textarea):not([contenteditable="true"]) {
+    caret-color: transparent !important;
+  }
+
+  input,
+  textarea,
+  [contenteditable="true"] {
+    caret-color: auto !important;
+  }
+
+  /* Prevent focus outline and text selection cursor on interactive logos and buttons */
+  img,
+  svg,
+  button,
+  a,
+  [role="button"] {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  img {
+    -webkit-user-drag: none;
+    user-drag: none;
+    pointer-events: auto;
+  }
+}
+
+/* Blurry Grey Frosted Glassmorphism Utilities */
+.blurry-grey-card {
+  background: rgba(226, 232, 240, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.07), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+}
+
+.blurry-grey-header {
+  background: rgba(241, 245, 249, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(203, 213, 225, 0.7);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}

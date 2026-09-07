@@ -1,0 +1,8 @@
+{
+  "name": "InfraNetra — Infrastructure Risk Intelligence Platform",
+  "description": "Government infrastructure-risk monitoring dashboard tracking mega projects, time and cost overruns, and early warnings based on PAIMANA Flash Report data.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
