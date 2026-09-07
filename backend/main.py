@@ -34,8 +34,9 @@ _upload_env = os.environ.get("UPLOAD_DIR", "").strip()
 UPLOAD_DIR = Path(_upload_env) if _upload_env else (Path(__file__).resolve().parent / "uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
-# Configure CORS for local development and the deployed Vercel frontend.
-# CORS_ALLOWED_ORIGINS can contain additional comma-separated production origins.
+# Configure CORS for local development, the production Vercel frontend,
+# and InfraNetra Vercel preview deployments.
+# Additional comma-separated origins can be supplied through CORS_ALLOWED_ORIGINS.
 _cors_env = os.environ.get("CORS_ALLOWED_ORIGINS", "").strip()
 
 _default_cors_origins = [
@@ -56,19 +57,38 @@ _env_cors_origins = [
     if origin.strip()
 ]
 
-# Remove duplicates while preserving order.
 _cors_origins = list(dict.fromkeys(_default_cors_origins + _env_cors_origins))
+_vercel_origin_regex = r"^https://infra-netra(?:-[a-z0-9-]+)?\.vercel\.app$"
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
-    # Supports Vercel deployment-preview URLs such as:
-    # https://infra-netra-<deployment>.vercel.app
-    allow_origin_regex=r"^https://infra-netra(?:-[a-z0-9-]+)?\.vercel\.app$",
+    allow_origin_regex=_vercel_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],
+    max_age=86400,
 )
+
+# Defensive fallback for environments/proxies where the normal CORS middleware
+# response headers are unexpectedly stripped. This only echoes origins that are
+# explicitly trusted above or match InfraNetra's Vercel preview URL pattern.
+@app.middleware("http")
+async def ensure_cors_headers(request: Request, call_next):
+    response = await call_next(request)
+    origin = (request.headers.get("origin") or "").rstrip("/")
+    if origin:
+        is_allowed = origin in _cors_origins or re.fullmatch(_vercel_origin_regex, origin) is not None
+        if is_allowed:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+            response.headers["Access-Control-Allow-Headers"] = request.headers.get(
+                "access-control-request-headers", "Authorization, Content-Type, X-Auth-Token"
+            )
+            response.headers["Vary"] = "Origin"
+    return response
 
 from extractor import extract_paimana_pdf
 from auth import (
@@ -1328,5 +1348,5 @@ if __name__ == "__main__":
         "main:app",
         host=os.environ.get("HOST", "0.0.0.0"),
         port=int(os.environ.get("PORT", "8000")),
-        reload=True,
+        reload=os.environ.get("RELOAD", "false").lower() == "true",
     )
