@@ -34,29 +34,37 @@ _upload_env = os.environ.get("UPLOAD_DIR", "").strip()
 UPLOAD_DIR = Path(_upload_env) if _upload_env else (Path(__file__).resolve().parent / "uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
-# Configure CORS — environment-based for production, localhost defaults for development.
-# Set CORS_ALLOWED_ORIGINS as a comma-separated list of allowed origins in production
-# (e.g. "https://infranetra.netlify.app,https://infranetra.example.com").
-# When not set, falls back to localhost development origins.
+# Configure CORS for local development and the deployed Vercel frontend.
+# CORS_ALLOWED_ORIGINS can contain additional comma-separated production origins.
 _cors_env = os.environ.get("CORS_ALLOWED_ORIGINS", "").strip()
-_cors_origins: list = (
-    [o.strip() for o in _cors_env.split(",") if o.strip()]
-    if _cors_env
-    else [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:4173",
-        "http://127.0.0.1:4173",
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-    ]
-)
+
+_default_cors_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "https://infra-netra.vercel.app",
+]
+
+_env_cors_origins = [
+    origin.strip().rstrip("/")
+    for origin in _cors_env.split(",")
+    if origin.strip()
+]
+
+# Remove duplicates while preserving order.
+_cors_origins = list(dict.fromkeys(_default_cors_origins + _env_cors_origins))
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
-    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$" if not _cors_env else None,
+    # Supports Vercel deployment-preview URLs such as:
+    # https://infra-netra-<deployment>.vercel.app
+    allow_origin_regex=r"^https://infra-netra(?:-[a-z0-9-]+)?\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
