@@ -1002,7 +1002,7 @@ async def ingest_flash_report(
     record_audit_log(
         actor_id=admin_user["id"],
         actor_username=admin_user["username"],
-        actor_role=admin_user["role"],
+        actor_role="ADMIN",
         action="INGEST_FLASH_REPORT",
         target_type="REPORT",
         target_id=safe_filename,
